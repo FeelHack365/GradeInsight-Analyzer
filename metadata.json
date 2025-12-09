@@ -1,0 +1,5 @@
+{
+  "name": "GradeInsight Analyzer",
+  "description": "A professional tool for analyzing student grades, providing summaries, subject evaluations, actionable advice, and visual reports.",
+  "requestFramePermissions": []
+}
