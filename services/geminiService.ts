@@ -1,8 +1,6 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { GradeReport } from "../types";
 
-const genAI = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const responseSchema: Schema = {
   type: Type.OBJECT,
   properties: {
@@ -57,7 +55,15 @@ const responseSchema: Schema = {
 };
 
 export const analyzeGrades = async (inputText: string): Promise<GradeReport> => {
-  const modelId = "gemini-2.5-flash"; // Using 2.5 Flash for JSON tasks
+  // 앱이 로드될 때가 아니라, 분석 요청 시에 API Key를 확인하고 인스턴스를 생성합니다.
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("API Key가 설정되지 않았습니다. Vercel 환경 변수(Environment Variables)에 'API_KEY'가 올바르게 등록되었는지 확인해주세요.");
+  }
+
+  const genAI = new GoogleGenAI({ apiKey });
+  const modelId = "gemini-2.5-flash"; 
   
   const systemInstruction = `
     You are a professional educational consultant and data analyst. 
@@ -81,7 +87,7 @@ export const analyzeGrades = async (inputText: string): Promise<GradeReport> => 
         systemInstruction: systemInstruction,
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 0.3, // Lower temperature for more consistent data extraction
+        temperature: 0.3,
       }
     });
 
